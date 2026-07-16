@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { AnimatePresence, motion, useScroll, useSpring, useTransform } from "motion/react"
 import {
   ArrowDown,
+  ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   Award,
@@ -18,6 +19,8 @@ import {
 } from "lucide-react"
 import { AnimatedNav } from "@/components/AnimatedNav"
 import { AtelierInterlude } from "@/components/AtelierInterlude"
+import { BakeryTimeline } from "@/components/BakeryTimeline"
+import { MagneticLink } from "@/components/MagneticLink"
 import { Button } from "@/components/ui/button"
 
 type ProductKind = "croissant" | "pain" | "tarte"
@@ -150,6 +153,12 @@ function App() {
   const heroVisualY = useTransform(scrollY, [0, 700], [0, -55])
   const heroVisualScale = useTransform(scrollY, [0, 700], [1, .94])
 
+  const changeProduct = (direction: -1 | 1) => {
+    const currentIndex = products.findIndex((product) => product.id === activeProduct)
+    const nextIndex = (currentIndex + direction + products.length) % products.length
+    setActiveProduct(products[nextIndex].id)
+  }
+
   useEffect(() => {
     if (!showIntro) return
     const timeout = window.setTimeout(() => setShowIntro(false), 850)
@@ -220,7 +229,7 @@ function App() {
             </motion.p>
 
             <motion.div className="hero-cta" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.45 }}>
-              <Button asChild variant="accent" size="lg"><a href="https://www.google.com/maps/search/?api=1&query=7+Place+de+la+Gare+des+Vallées+92270+Bois-Colombes" target="_blank" rel="noreferrer"><Navigation /> L’itinéraire</a></Button>
+              <Button asChild variant="accent" size="lg"><MagneticLink href="https://www.google.com/maps/search/?api=1&query=7+Place+de+la+Gare+des+Vallées+92270+Bois-Colombes" target="_blank" rel="noreferrer"><Navigation /> L’itinéraire</MagneticLink></Button>
               <a className="discover-link" href="#maison">Découvrir la maison <ArrowDown /></a>
             </motion.div>
           </motion.div>
@@ -274,6 +283,13 @@ function App() {
 
         <AtelierInterlude />
 
+        <BakeryTimeline />
+
+        <div className="chapter-ribbon" aria-hidden="true">
+          <motion.i initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true, margin: "-10%" }} transition={{ duration: 1.1, ease: [.76, 0, .24, 1] }} />
+          <span>MATIÈRE <b>·</b> TEMPS <b>·</b> GESTE</span>
+        </div>
+
         <section className="craft" id="savoir-faire">
           <div className="craft-intro">
             <SectionLabel number="02" light>Le savoir-faire</SectionLabel>
@@ -292,6 +308,9 @@ function App() {
 
             <div className="showcase-stage">
               <AnimatePresence mode="wait">
+                <motion.span className="stage-wordmark" key={`word-${active.id}`} initial={{ opacity: 0, x: 80 }} animate={{ opacity: .16, x: 0 }} exit={{ opacity: 0, x: -80 }} transition={{ duration: .75, ease: [.16, 1, .3, 1] }} aria-hidden="true">{active.short}</motion.span>
+              </AnimatePresence>
+              <AnimatePresence mode="wait">
                 <motion.figure
                   key={activeProduct}
                   className="showcase-photo"
@@ -306,6 +325,10 @@ function App() {
                 </motion.figure>
               </AnimatePresence>
               <div className="stage-index">{active.number}<span>/ 03</span></div>
+              <div className="stage-controls">
+                <button type="button" onClick={() => changeProduct(-1)} aria-label="Voir la spécialité précédente"><ArrowLeft /></button>
+                <button type="button" onClick={() => changeProduct(1)} aria-label="Voir la spécialité suivante"><ArrowRight /></button>
+              </div>
             </div>
 
             <AnimatePresence mode="wait">
@@ -338,7 +361,10 @@ function App() {
           <motion.div className="award-seal" whileInView={{ rotate: [12, 0], scale: [.8, 1], opacity: [0, 1] }} viewport={{ once: true }} transition={{ duration: .9, ease: [.16, 1, .3, 1] }}><Award /><span>MEILLEUR<br />ARTISAN<br /><strong>92</strong></span><small>2024</small></motion.div>
         </section>
 
-        <div className="kinetic-line"><div>{[0, 1].map((group) => <span key={group}>ÇA CROUSTILLE&nbsp; ✦ &nbsp;ÇA FEUILLETTE&nbsp; ✦ &nbsp;ÇA SE PARTAGE&nbsp; ✦ &nbsp;</span>)}</div></div>
+        <div className="kinetic-line" aria-hidden="true">
+          <div className="kinetic-track kinetic-forward">{[0, 1].map((group) => <span key={group}>PÉTRI SUR PLACE&nbsp; ✦ &nbsp;FAÇONNÉ À LA MAIN&nbsp; ✦ &nbsp;CUIT CHAQUE MATIN&nbsp; ✦ &nbsp;</span>)}</div>
+          <div className="kinetic-track kinetic-backward">{[0, 1].map((group) => <span key={group}>ÇA CROUSTILLE&nbsp; · &nbsp;ÇA FEUILLETTE&nbsp; · &nbsp;ÇA SE PARTAGE&nbsp; · &nbsp;</span>)}</div>
+        </div>
 
         <section className="reviews" id="avis">
           <div className="reviews-heading">
@@ -369,7 +395,7 @@ function App() {
               <div><span>Dimanche</span><strong>07:00 — 19:00</strong></div>
               <div className="closed"><span>Lundi</span><strong>Fermé</strong></div>
             </Reveal>
-            <Reveal className="visit-actions"><Button asChild variant="accent" size="lg"><a href="tel:+33156057460"><Phone />01 56 05 74 60</a></Button><a href="https://www.google.com/maps/search/?api=1&query=7+Place+de+la+Gare+des+Vallées+92270+Bois-Colombes" target="_blank" rel="noreferrer">Ouvrir dans Maps <ArrowUpRight /></a></Reveal>
+            <Reveal className="visit-actions"><Button asChild variant="accent" size="lg"><MagneticLink href="tel:+33156057460"><Phone />01 56 05 74 60</MagneticLink></Button><a href="https://www.google.com/maps/search/?api=1&query=7+Place+de+la+Gare+des+Vallées+92270+Bois-Colombes" target="_blank" rel="noreferrer">Ouvrir dans Maps <ArrowUpRight /></a></Reveal>
           </div>
 
           <div className="map-v2" aria-label="Plan stylisé de la Gare des Vallées">
