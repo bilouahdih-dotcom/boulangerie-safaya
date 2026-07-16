@@ -1,5 +1,5 @@
-import { useRef } from "react"
-import { motion, useScroll, useTransform, type MotionValue } from "motion/react"
+import { useRef, useState } from "react"
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "motion/react"
 
 const timelineScenes = [
   {
@@ -37,13 +37,13 @@ type SceneProps = {
   progress: MotionValue<number>
 }
 
-function useSceneMotion(index: number, progress: MotionValue<number>) {
+function useImageMotion(index: number, progress: MotionValue<number>) {
   const lastIndex = timelineScenes.length - 1
   const segment = 1 / timelineScenes.length
   const start = index * segment
   const end = (index + 1) * segment
 
-  const opacity = useTransform(
+  const imageOpacity = useTransform(
     progress,
     index === 0
       ? [0, end - 0.035, end + 0.035]
@@ -53,49 +53,32 @@ function useSceneMotion(index: number, progress: MotionValue<number>) {
     index === 0 ? [1, 1, 0] : index === lastIndex ? [0, 1, 1] : [0, 1, 1, 0],
   )
   const scale = useTransform(progress, [start, Math.min(1, end + 0.04)], [1.12, 1])
-  const y = useTransform(
-    progress,
-    index === 0
-      ? [0, end - 0.035, end + 0.035]
-      : index === lastIndex
-        ? [start - 0.035, start + 0.035, 1]
-        : [start - 0.035, start + 0.035, end - 0.035, end + 0.035],
-    index === 0 ? [0, 0, -70] : index === lastIndex ? [70, 0, 0] : [70, 0, 0, -70],
-  )
 
-  return { opacity, scale, y }
+  return { imageOpacity, scale }
 }
 
 function TimelineImage({ index, progress }: SceneProps) {
   const scene = timelineScenes[index]
-  const { opacity, scale } = useSceneMotion(index, progress)
+  const { imageOpacity, scale } = useImageMotion(index, progress)
 
   return (
-    <motion.figure className="timeline-image" style={{ opacity }} aria-hidden="true">
+    <motion.figure className="timeline-image" style={{ opacity: imageOpacity }} aria-hidden="true">
       <motion.img src={scene.image} alt="" loading="lazy" style={{ scale }} />
     </motion.figure>
   )
 }
 
-function TimelineCopy({ index, progress }: SceneProps) {
-  const scene = timelineScenes[index]
-  const { opacity, y } = useSceneMotion(index, progress)
-
-  return (
-    <motion.article className="timeline-copy" style={{ opacity, y }}>
-      <span className="timeline-eyebrow">{scene.eyebrow}</span>
-      <strong className="timeline-time">{scene.time}</strong>
-      <h2>{scene.title}</h2>
-      <p>{scene.description}</p>
-    </motion.article>
-  )
-}
-
 export function BakeryTimeline() {
   const sectionRef = useRef<HTMLElement>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
+  })
+  const activeScene = timelineScenes[activeIndex]
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    setActiveIndex(Math.min(timelineScenes.length - 1, Math.floor(latest * timelineScenes.length)))
   })
 
   return (
@@ -112,12 +95,24 @@ export function BakeryTimeline() {
         <div className="timeline-content">
           <div className="timeline-heading"><span>Une matinée au fournil</span><small>Du premier geste à la première vente</small></div>
           <div className="timeline-copy-stack">
-            {timelineScenes.map((scene, index) => (
-              <TimelineCopy key={scene.time} index={index} progress={scrollYProgress} />
-            ))}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.article
+                className="timeline-copy"
+                key={activeScene.time}
+                initial={{ opacity: 0, y: 46 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -46 }}
+                transition={{ duration: .32, ease: [.76, 0, .24, 1] }}
+              >
+                <span className="timeline-eyebrow">{activeScene.eyebrow}</span>
+                <strong className="timeline-time">{activeScene.time}</strong>
+                <h2>{activeScene.title}</h2>
+                <p>{activeScene.description}</p>
+              </motion.article>
+            </AnimatePresence>
           </div>
           <div className="timeline-navigation" aria-hidden="true">
-            <motion.i className="timeline-progress" style={{ scaleY: scrollYProgress }} />
+            <motion.i className="timeline-progress" style={{ scaleX: scrollYProgress }} />
             {timelineScenes.map((scene, index) => <span key={scene.time}>0{index + 1}<small>{scene.time}</small></span>)}
           </div>
         </div>
