@@ -7,28 +7,36 @@ const timelineScenes = [
     eyebrow: "Le pétrissage",
     title: "La ville dort. La pâte, déjà, travaille.",
     description: "Farine, eau, levain et précision. Le premier geste donne le rythme à toute la journée.",
-    image: "/images/baker-hands.jpg",
+    image: "/images/baker-hands.webp",
+    width: 1800,
+    height: 2239,
   },
   {
     time: "04:30",
     eyebrow: "Le façonnage",
     title: "Chaque pièce prend sa forme. Aucune ne se ressemble tout à fait.",
     description: "La main ajuste, replie et tend la pâte. Un geste répété, jamais automatique.",
-    image: "/images/artisan-bread.jpg",
+    image: "/images/artisan-bread.webp",
+    width: 1600,
+    height: 1067,
   },
   {
     time: "05:45",
     eyebrow: "La cuisson",
     title: "Le four décide de la couleur, du son et de la croûte.",
     description: "À 240 degrés, quelques secondes séparent le doré juste du doré de trop.",
-    image: "/images/croissants-oven.jpg",
+    image: "/images/croissants-oven.webp",
+    width: 1800,
+    height: 2700,
   },
   {
     time: "06:30",
     eyebrow: "L’ouverture",
     title: "Les portes s’ouvrent. Le quartier peut commencer sa journée.",
     description: "La première fournée rejoint la vitrine au moment où le premier train entre en gare.",
-    image: "/images/bakery-croissants.jpg",
+    image: "/images/bakery-croissants.webp",
+    width: 1600,
+    height: 2399,
   },
 ] as const
 
@@ -63,7 +71,7 @@ function TimelineImage({ index, progress }: SceneProps) {
 
   return (
     <motion.figure className="timeline-image" style={{ opacity: imageOpacity }} aria-hidden="true">
-      <motion.img src={scene.image} alt="" loading="lazy" style={{ scale }} />
+      <motion.img src={scene.image} alt="" width={scene.width} height={scene.height} loading="lazy" style={{ scale }} />
     </motion.figure>
   )
 }

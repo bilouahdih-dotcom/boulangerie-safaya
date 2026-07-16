@@ -25,6 +25,9 @@ import { Button } from "@/components/ui/button"
 
 type ProductKind = "croissant" | "pain" | "tarte"
 
+const awardSourceUrl = "https://boulangersdugrandparis.com/wp-content/uploads/2024/12/LBF_496_DECEMBRE_2024_WEB.pdf#page=10"
+const reviewsSourceUrl = "https://fr.restaurantguru.com/Boulangerie-Safaya-Bois-Colombes"
+
 const products: Array<{
   id: ProductKind
   number: string
@@ -35,6 +38,8 @@ const products: Array<{
   note: string
   image: string
   alt: string
+  width: number
+  height: number
 }> = [
   {
     id: "croissant",
@@ -44,8 +49,10 @@ const products: Array<{
     description: "Une pousse lente, une croûte fine et ce craquant net que l’on reconnaît avant même la première bouchée.",
     proof: "Top 10 départemental",
     note: "Beurre · Pousse lente · Dorure minute",
-    image: "/images/croissants-dark.jpg",
+    image: "/images/croissants-dark.webp",
     alt: "Deux croissants dorés éclairés sur un fond noir",
+    width: 1800,
+    height: 1200,
   },
   {
     id: "pain",
@@ -55,8 +62,10 @@ const products: Array<{
     description: "Une croûte profonde, une mie souple et une fermentation maîtrisée. La pièce qui a obtenu la meilleure note du concours 2024.",
     proof: "Meilleure note 2024",
     note: "Levain · Fermentation longue · Farine française",
-    image: "/images/sourdough-rack.jpg",
+    image: "/images/sourdough-rack.webp",
     alt: "Pain de campagne artisanal refroidissant sur une grille",
+    width: 1800,
+    height: 1200,
   },
   {
     id: "tarte",
@@ -66,8 +75,10 @@ const products: Array<{
     description: "Tartelette citron, flan coco, mille-feuille : une vitrine généreuse où chaque classique garde du caractère.",
     proof: "Plébiscitée par les habitués",
     note: "Citron · Crème lisse · Fond croustillant",
-    image: "/images/lemon-tart.jpg",
+    image: "/images/lemon-tart.webp",
     alt: "Tarte au citron meringuée à la finition artisanale",
+    width: 1600,
+    height: 2415,
   },
 ]
 
@@ -75,17 +86,20 @@ const reviews = [
   {
     quote: "Bon pain, très bonne briochette au sucre. Hâte de tester le reste.",
     author: "Louise",
-    source: "Avis Google",
+    source: "Google · avis public",
+    sourceUrl: reviewsSourceUrl,
   },
   {
     quote: "La bûche écureuil, le mille-feuille et les pains : c’était divin comme d’habitude.",
     author: "Catherine",
-    source: "Cliente fidèle",
+    source: "Google · cliente fidèle",
+    sourceUrl: reviewsSourceUrl,
   },
   {
     quote: "Personnel adorable, service rapide, tartelette citron et flan coco vraiment savoureux.",
     author: "Ambre",
-    source: "Avis Google",
+    source: "Google · avis public",
+    sourceUrl: reviewsSourceUrl,
   },
 ]
 
@@ -103,6 +117,15 @@ function getOpenState() {
   if (isMonday) return { open: false, label: "Fermé le lundi" }
   if (current < opens) return { open: false, label: `Ouvre à ${isSunday ? "7h" : "6h30"}` }
   return { open: false, label: isSunday ? "Ouvre mardi à 6h30" : "Ouvre demain à 6h30" }
+}
+
+function shouldShowIntro() {
+  if (new URLSearchParams(window.location.search).has("skipIntro")) return false
+  try {
+    return window.sessionStorage.getItem("safaya-intro-seen") !== "true"
+  } catch {
+    return true
+  }
 }
 
 function IntroCurtain() {
@@ -141,7 +164,7 @@ function SectionLabel({ number, children, light = false }: { number: string; chi
 }
 
 function App() {
-  const [showIntro, setShowIntro] = useState(() => !new URLSearchParams(window.location.search).has("skipIntro"))
+  const [showIntro, setShowIntro] = useState(shouldShowIntro)
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeProduct, setActiveProduct] = useState<ProductKind>("croissant")
   const openState = useMemo(getOpenState, [])
@@ -161,7 +184,10 @@ function App() {
 
   useEffect(() => {
     if (!showIntro) return
-    const timeout = window.setTimeout(() => setShowIntro(false), 850)
+    const timeout = window.setTimeout(() => {
+      try { window.sessionStorage.setItem("safaya-intro-seen", "true") } catch { /* Storage can be unavailable in private contexts. */ }
+      setShowIntro(false)
+    }, 850)
     return () => window.clearTimeout(timeout)
   }, [showIntro])
 
@@ -242,8 +268,10 @@ function App() {
               transition={{ delay: .95, duration: 1.15, ease: [.76, 0, .24, 1] }}
             >
               <motion.img
-                src="/images/hero-croissants.jpg"
+                src="/images/hero-croissants.webp"
                 alt="Croissants dorés en vitrine"
+                width={1600}
+                height={2400}
                 loading="eager"
                 fetchPriority="high"
                 initial={{ scale: 1.16 }}
@@ -253,7 +281,7 @@ function App() {
               <figcaption><span>La fournée du matin</span><small>Feuilletage · beurre · patience</small></figcaption>
             </motion.figure>
             <motion.figure className="hero-media-detail" initial={{ opacity: 0, x: 45, rotate: 4 }} animate={{ opacity: 1, x: 0, rotate: 0 }} transition={{ delay: 1.45, duration: .85, ease: [.16, 1, .3, 1] }}>
-              <motion.img src="/images/croissant-coffee.jpg" alt="Croissant et café servis au petit-déjeuner" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }} />
+              <motion.img src="/images/croissant-coffee.webp" alt="Croissant et café servis au petit-déjeuner" width={1600} height={1067} animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }} />
               <span>06:30<small>Le premier café</small></span>
             </motion.figure>
             <motion.div className="hero-media-line" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 1.65, duration: .8, ease: [.16, 1, .3, 1] }} />
@@ -319,7 +347,7 @@ function App() {
                   exit={{ clipPath: "inset(0 0 0 100%)" }}
                   transition={{ duration: .72, ease: [.76, 0, .24, 1] }}
                 >
-                  <motion.img src={active.image} alt={active.alt} loading="lazy" initial={{ scale: 1.15 }} animate={{ scale: 1.02 }} transition={{ duration: 1.2, ease: [.16, 1, .3, 1] }} />
+                  <motion.img src={active.image} alt={active.alt} width={active.width} height={active.height} loading="lazy" initial={{ scale: 1.15 }} animate={{ scale: 1.02 }} transition={{ duration: 1.2, ease: [.16, 1, .3, 1] }} />
                   <div className="showcase-shade" />
                   <figcaption><span>Safaya</span><small>Pièce signature · {active.number}</small></figcaption>
                 </motion.figure>
@@ -344,7 +372,7 @@ function App() {
 
         <section className="award-section">
           <motion.figure className="award-photo" initial={{ clipPath: "inset(0 0 100% 0)" }} whileInView={{ clipPath: "inset(0 0 0% 0)" }} viewport={{ once: true, margin: "-15%" }} transition={{ duration: 1.05, ease: [.76, 0, .24, 1] }}>
-            <motion.img src="/images/croissants-oven.jpg" alt="Croissants cuisant dans un four" loading="lazy" initial={{ scale: 1.14 }} whileInView={{ scale: 1.02 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [.16, 1, .3, 1] }} />
+            <motion.img src="/images/croissants-oven.webp" alt="Croissants cuisant dans un four" width={1800} height={2700} loading="lazy" initial={{ scale: 1.14 }} whileInView={{ scale: 1.02 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [.16, 1, .3, 1] }} />
             <figcaption><span>240°</span><small>La chaleur juste.<br />Le temps précis.</small></figcaption>
           </motion.figure>
           <motion.div className="award-watermark" whileInView={{ x: ["-8%", "0%"] }} viewport={{ once: true }} transition={{ duration: 1.2 }}>PREMIER</motion.div>
@@ -352,6 +380,7 @@ function App() {
             <SectionLabel number="03" light>Le titre 2024</SectionLabel>
             <Reveal><h2>Quatre essais.<br />Une première place.</h2></Reveal>
             <Reveal><p>La meilleure note au pain de campagne, et un classement dans le top 10 pour le croissant et la baguette tradition.</p></Reveal>
+            <Reveal><a className="award-source" href={awardSourceUrl} target="_blank" rel="noreferrer">Consulter la publication officielle <ArrowUpRight /></a></Reveal>
             <Reveal className="award-podium">
               <div><span>1</span><strong>Pain de campagne</strong><small>Meilleure note</small></div>
               <div><span>10</span><strong>Croissant</strong><small>Top départemental</small></div>
@@ -378,7 +407,7 @@ function App() {
                 <motion.article whileHover={{ y: -10 }} transition={{ duration: .3 }}>
                   <div className="review-top"><Quote /><span>0{index + 1}</span></div>
                   <p>{review.quote}</p>
-                  <footer><span>{review.author}</span><small>{review.source}</small></footer>
+                  <footer><span>{review.author}</span><small><a href={review.sourceUrl} target="_blank" rel="noreferrer">{review.source} <ArrowUpRight /></a></small></footer>
                 </motion.article>
               </Reveal>
             ))}
@@ -410,7 +439,7 @@ function App() {
 
       <footer id="footer" className="footer-v2">
         <motion.figure className="footer-visual">
-          <motion.img src="/images/croissants-dark.jpg" alt="Croissants dorés sur fond sombre" loading="lazy" whileInView={{ scale: [1.12, 1] }} viewport={{ once: true }} transition={{ duration: 1.6, ease: [.16, 1, .3, 1] }} />
+          <motion.img src="/images/croissants-dark.webp" alt="Croissants dorés sur fond sombre" width={1800} height={1200} loading="lazy" whileInView={{ scale: [1.12, 1] }} viewport={{ once: true }} transition={{ duration: 1.6, ease: [.16, 1, .3, 1] }} />
           <figcaption><span>À demain matin.</span><small>Première fournée · 06:30</small></figcaption>
         </motion.figure>
         <div className="footer-main"><span className="footer-logo">SAFAYA<em>•</em></span><p>Le bon pain.<br />Au bon endroit.<br />Chaque matin.</p></div>
