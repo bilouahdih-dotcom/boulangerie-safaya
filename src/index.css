@@ -321,16 +321,16 @@ body::after {
 .hours-v2 { margin: 28px 0 34px; }
 .hours-v2 div { display: flex; justify-content: space-between; gap: 20px; padding: 15px 0; border-bottom: 1px solid #fff1; font-size: .68rem; }.hours-v2 span { color: #fff7; }.hours-v2 .closed strong { color: var(--raspberry); }
 .visit-actions { display: flex; align-items: center; gap: 26px; }.visit-actions > a { display: flex; align-items: center; gap: 8px; font-size: .65rem; border-bottom: 1px solid #fff4; padding-bottom: 6px; }.visit-actions > a svg { width: 14px; }
-.map-v2 { position: relative; min-height: 700px; overflow: hidden; color: var(--ink); background: var(--gold); }
+.map-v2 { position: relative; min-height: 700px; overflow: hidden; color: var(--cream); background: var(--raspberry); }
 .map-grid-v2 { position: absolute; inset: -20%; opacity: .14; transform: rotate(12deg); background-size: 74px 74px; background-image: linear-gradient(var(--ink) 1px, transparent 1px), linear-gradient(90deg, var(--ink) 1px, transparent 1px); }
 .rail { position: absolute; width: 54px; height: 160%; top: -25%; transform: rotate(28deg); border-left: 3px solid var(--ink); border-right: 3px solid var(--ink); opacity: .68; }
 .rail::after { content: ""; position: absolute; inset: 0 15px; background: repeating-linear-gradient(to bottom, var(--ink) 0 5px, transparent 5px 19px); }
 .rail-one { left: 38%; }.rail-two { left: 51%; }
 .station-pill { position: absolute; left: 22%; top: 28%; display: flex; align-items: center; gap: 10px; padding: 13px 18px; border-radius: 999px; background: var(--ink); color: var(--cream); box-shadow: 0 16px 35px #41250638; }
 .station-pill svg { width: 19px; }.station-pill span { font: 1.05rem var(--serif); }.station-pill small { display: block; font: .46rem var(--sans); text-transform: uppercase; letter-spacing: .12em; opacity: .6; }
-.safaya-pin { position: absolute; z-index: 3; right: 17%; top: 52%; padding: 14px 18px 14px 12px; border-radius: var(--radius); color: white; background: var(--raspberry); display: flex; gap: 12px; align-items: center; box-shadow: 0 22px 50px #7d301d4f; }
-.safaya-pin > span { width: 38px; height: 38px; display: grid; place-content: center; border: 1px solid #fff5; border-radius: 50%; font: 1.35rem var(--serif); }.safaya-pin div { display: flex; flex-direction: column; }.safaya-pin strong { font: 1.2rem var(--serif); }.safaya-pin small { margin-top: 2px; font-size: .45rem; text-transform: uppercase; letter-spacing: .12em; opacity: .9; }
-.map-route { position: absolute; right: 20%; top: 66%; display: flex; align-items: center; gap: 10px; transform: rotate(-6deg); font-size: .47rem; letter-spacing: .14em; }.map-route i { width: 70px; border-top: 2px dashed var(--raspberry); }
+.safaya-pin { position: absolute; z-index: 3; right: 17%; top: 52%; padding: 14px 18px 14px 12px; border-radius: var(--radius); color: var(--ink); background: var(--gold); display: flex; gap: 12px; align-items: center; box-shadow: 0 22px 50px #681a184f; }
+.safaya-pin > span { width: 38px; height: 38px; display: grid; place-content: center; border: 1px solid #17131155; border-radius: 50%; font: 1.35rem var(--serif); }.safaya-pin div { display: flex; flex-direction: column; }.safaya-pin strong { font: 1.2rem var(--serif); }.safaya-pin small { margin-top: 2px; font-size: .45rem; text-transform: uppercase; letter-spacing: .12em; opacity: .82; }
+.map-route { position: absolute; right: 20%; top: 66%; display: flex; align-items: center; gap: 10px; transform: rotate(-6deg); font-size: .47rem; letter-spacing: .14em; }.map-route i { width: 70px; border-top: 2px dashed var(--gold); }
 
 .footer-v2 { position: relative; padding: 5vw 4vw 2.5rem; color: var(--cream); background: #100e0d; }
 .footer-visual { position: relative; height: min(66vh, 760px); margin: 0 0 10rem; overflow: hidden; border-radius: var(--radius); background: var(--ink); }
