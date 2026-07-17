@@ -324,13 +324,13 @@ function App() {
           <div className="craft-showcase">
             <div className="product-nav" role="tablist" aria-label="Choisir une spécialité">
               {products.map((product) => (
-                <button key={product.id} type="button" role="tab" aria-selected={product.id === activeProduct} className={product.id === activeProduct ? "active" : ""} onClick={() => setActiveProduct(product.id)}>
+                <button key={product.id} id={`product-tab-${product.id}`} type="button" role="tab" aria-selected={product.id === activeProduct} aria-controls="product-panel" className={product.id === activeProduct ? "active" : ""} onClick={() => setActiveProduct(product.id)}>
                   <span>{product.number}</span>{product.short}<i />
                 </button>
               ))}
             </div>
 
-            <div className="showcase-stage">
+            <div className="showcase-stage" id="product-panel" role="tabpanel" aria-labelledby={`product-tab-${active.id}`}>
               <AnimatePresence mode="wait">
                 <motion.span className="stage-wordmark" key={`word-${active.id}`} initial={{ opacity: 0, x: 80 }} animate={{ opacity: .16, x: 0 }} exit={{ opacity: 0, x: -80 }} transition={{ duration: .75, ease: [.16, 1, .3, 1] }} aria-hidden="true">{active.short}</motion.span>
               </AnimatePresence>
@@ -387,8 +387,8 @@ function App() {
         </section>
 
         <div className="kinetic-line" aria-hidden="true">
-          <div className="kinetic-track kinetic-forward">{[0, 1].map((group) => <span key={group}>PÉTRI SUR PLACE&nbsp; ✦ &nbsp;FAÇONNÉ À LA MAIN&nbsp; ✦ &nbsp;CUIT CHAQUE MATIN&nbsp; ✦ &nbsp;</span>)}</div>
-          <div className="kinetic-track kinetic-backward">{[0, 1].map((group) => <span key={group}>ÇA CROUSTILLE&nbsp; · &nbsp;ÇA FEUILLETTE&nbsp; · &nbsp;ÇA SE PARTAGE&nbsp; · &nbsp;</span>)}</div>
+          <div className="kinetic-track kinetic-forward">{[0, 1].map((group) => <span key={group}>{"PÉTRI SUR PLACE ✦ FAÇONNÉ À LA MAIN ✦ CUIT CHAQUE MATIN ✦ ".repeat(6)}</span>)}</div>
+          <div className="kinetic-track kinetic-backward">{[0, 1].map((group) => <span key={group}>{"ÇA CROUSTILLE · ÇA FEUILLETTE · ÇA SE PARTAGE · ".repeat(6)}</span>)}</div>
         </div>
 
         <section className="reviews" id="avis">
@@ -423,7 +423,7 @@ function App() {
             <Reveal className="visit-actions"><Button asChild variant="accent" size="lg"><MagneticLink href="tel:+33156057460"><Phone />01 56 05 74 60</MagneticLink></Button><a href="https://www.google.com/maps/search/?api=1&query=7+Place+de+la+Gare+des+Vallées+92270+Bois-Colombes" target="_blank" rel="noreferrer">Ouvrir dans Maps <ArrowUpRight /></a></Reveal>
           </div>
 
-          <div className="map-v2" aria-label="Plan stylisé de la Gare des Vallées">
+          <div className="map-v2" role="img" aria-label="Plan stylisé de la Gare des Vallées">
             <div className="map-grid-v2" />
             <div className="rail rail-one" /><div className="rail rail-two" />
             <div className="station-pill"><TrainFront /><span>Les Vallées<small>Ligne J</small></span></div>
