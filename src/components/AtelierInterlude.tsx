@@ -15,7 +15,7 @@ export function AtelierInterlude() {
   return (
     <section className="atelier-interlude" ref={sectionRef} aria-label="Le geste artisanal">
       <motion.figure className="atelier-visual" style={{ y: imageY }}>
-        <img src="/images/baker-hands.webp" alt="Mains d’un artisan boulanger travaillant une pâte farinée" width={1800} height={2239} loading="lazy" />
+        <img src="/images/baker-hands.webp" alt="Mains d’un artisan boulanger travaillant une pâte farinée" width={1800} height={2239} loading="lazy" decoding="async" />
         <div className="atelier-visual-shade" />
       </motion.figure>
 

@@ -71,7 +71,7 @@ function TimelineImage({ index, progress }: SceneProps) {
 
   return (
     <motion.figure className="timeline-image" style={{ opacity: imageOpacity }} aria-hidden="true">
-      <motion.img src={scene.image} alt="" width={scene.width} height={scene.height} loading="lazy" style={{ scale }} />
+      <motion.img src={scene.image} alt="" width={scene.width} height={scene.height} loading="lazy" decoding="async" style={{ scale }} />
     </motion.figure>
   )
 }

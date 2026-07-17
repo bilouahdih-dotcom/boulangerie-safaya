@@ -120,12 +120,8 @@ function getOpenState() {
 }
 
 function shouldShowIntro() {
-  if (new URLSearchParams(window.location.search).has("skipIntro")) return false
-  try {
-    return window.sessionStorage.getItem("safaya-intro-seen") !== "true"
-  } catch {
-    return true
-  }
+  const search = new URLSearchParams(window.location.search)
+  return search.has("intro") && !search.has("skipIntro")
 }
 
 function IntroCurtain() {
@@ -134,13 +130,13 @@ function IntroCurtain() {
       className="intro-curtain"
       initial={{ y: 0 }}
       exit={{ y: "-100%" }}
-      transition={{ duration: .9, ease: [.76, 0, .24, 1] }}
+      transition={{ duration: .62, ease: [.76, 0, .24, 1] }}
     >
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45 }} className="intro-brand">
         <span>S</span>
         <div>SAFAYA<small>BOULANGERIE · PÂTISSERIE</small></div>
       </motion.div>
-      <div className="intro-progress"><motion.i initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: .72, ease: "easeInOut" }} /></div>
+      <div className="intro-progress"><motion.i initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: .48, ease: "easeInOut" }} /></div>
     </motion.div>
   )
 }
@@ -185,9 +181,8 @@ function App() {
   useEffect(() => {
     if (!showIntro) return
     const timeout = window.setTimeout(() => {
-      try { window.sessionStorage.setItem("safaya-intro-seen", "true") } catch { /* Storage can be unavailable in private contexts. */ }
       setShowIntro(false)
-    }, 850)
+    }, 560)
     return () => window.clearTimeout(timeout)
   }, [showIntro])
 
@@ -202,7 +197,7 @@ function App() {
       <motion.div className="page-progress" style={{ scaleX: progress }} />
 
       <motion.header className="site-header-v2" style={{ "--compact": headerCompact } as React.CSSProperties}>
-        <a className="brand-v2" href="#accueil" aria-label="Safaya — accueil">
+        <a className="brand-v2" href="#accueil">
           <span className="brand-symbol">S</span>
           <span>SAFAYA<small>BOULANGERIE · PÂTISSERIE</small></span>
         </a>
@@ -240,21 +235,21 @@ function App() {
           <div className="hero-line hero-line-a" /><div className="hero-line hero-line-b" />
 
           <motion.div className="hero-copy-v2" style={{ y: heroCopyY }}>
-            <motion.div className="award-chip" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.02 }}>
+            <motion.div className="award-chip" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .08 }}>
               <Award />
               <span>Meilleur Artisan Boulanger<br /><strong>Hauts-de-Seine · 2024</strong></span>
             </motion.div>
 
             <h1>
-              <span className="title-mask"><motion.i initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ delay: .98, duration: .9, ease: [.16, 1, .3, 1] }}>Le matin</motion.i></span>
-              <span className="title-mask"><motion.i initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ delay: 1.08, duration: .9, ease: [.16, 1, .3, 1] }}>commence <em>ici.</em></motion.i></span>
+              <span className="title-mask"><motion.i initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ delay: .08, duration: .72, ease: [.16, 1, .3, 1] }}>Le matin</motion.i></span>
+              <span className="title-mask"><motion.i initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ delay: .16, duration: .72, ease: [.16, 1, .3, 1] }}>commence <em>ici.</em></motion.i></span>
             </h1>
 
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.35 }}>
+            <motion.p initial={{ opacity: 1, y: 12 }} animate={{ y: 0 }} transition={{ duration: .38, ease: [.16, 1, .3, 1] }}>
               À deux pas du quai, Safaya transforme chaque matin en rituel : du pain primé, un feuilletage précis et une équipe qui connaît son quartier.
             </motion.p>
 
-            <motion.div className="hero-cta" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.45 }}>
+            <motion.div className="hero-cta" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .3, duration: .5 }}>
               <Button asChild variant="accent" size="lg"><MagneticLink href="https://www.google.com/maps/search/?api=1&query=7+Place+de+la+Gare+des+Vallées+92270+Bois-Colombes" target="_blank" rel="noreferrer"><Navigation /> L’itinéraire</MagneticLink></Button>
               <a className="discover-link" href="#maison">Découvrir la maison <ArrowDown /></a>
             </motion.div>
@@ -265,7 +260,7 @@ function App() {
               className="hero-media-main"
               initial={{ clipPath: "inset(100% 0 0 0)" }}
               animate={{ clipPath: "inset(0% 0 0 0)" }}
-              transition={{ delay: .95, duration: 1.15, ease: [.76, 0, .24, 1] }}
+              transition={{ delay: .08, duration: .85, ease: [.76, 0, .24, 1] }}
             >
               <motion.img
                 src="/images/hero-croissants.webp"
@@ -274,17 +269,18 @@ function App() {
                 height={2400}
                 loading="eager"
                 fetchPriority="high"
+                decoding="async"
                 initial={{ scale: 1.16 }}
                 animate={{ scale: 1.04 }}
-                transition={{ delay: .95, duration: 1.8, ease: [.16, 1, .3, 1] }}
+                transition={{ delay: .08, duration: 1.25, ease: [.16, 1, .3, 1] }}
               />
               <figcaption><span>La fournée du matin</span><small>Feuilletage · beurre · patience</small></figcaption>
             </motion.figure>
-            <motion.figure className="hero-media-detail" initial={{ opacity: 0, x: 45, rotate: 4 }} animate={{ opacity: 1, x: 0, rotate: 0 }} transition={{ delay: 1.45, duration: .85, ease: [.16, 1, .3, 1] }}>
-              <motion.img src="/images/croissant-coffee.webp" alt="Croissant et café servis au petit-déjeuner" width={1600} height={1067} animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }} />
+            <motion.figure className="hero-media-detail" initial={{ opacity: 0, x: 45, rotate: 4 }} animate={{ opacity: 1, x: 0, rotate: 0 }} transition={{ delay: .32, duration: .7, ease: [.16, 1, .3, 1] }}>
+              <motion.img src="/images/croissant-coffee.webp" alt="Croissant et café servis au petit-déjeuner" width={1600} height={1067} loading="lazy" decoding="async" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }} />
               <span>06:30<small>Le premier café</small></span>
             </motion.figure>
-            <motion.div className="hero-media-line" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 1.65, duration: .8, ease: [.16, 1, .3, 1] }} />
+            <motion.div className="hero-media-line" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: .4, duration: .65, ease: [.16, 1, .3, 1] }} />
             <motion.div className="floating-proof proof-rating" animate={{ y: [0, -7, 0] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}><span>4,3</span><div><strong>★★★★★</strong><small>+130 avis</small></div></motion.div>
             <motion.div className="floating-proof proof-craft" animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 4.6, ease: "easeInOut" }}><Wheat /><span><strong>Artisan</strong><small>depuis 2019</small></span></motion.div>
           </motion.div>
@@ -347,7 +343,7 @@ function App() {
                   exit={{ clipPath: "inset(0 0 0 100%)" }}
                   transition={{ duration: .72, ease: [.76, 0, .24, 1] }}
                 >
-                  <motion.img src={active.image} alt={active.alt} width={active.width} height={active.height} loading="lazy" initial={{ scale: 1.15 }} animate={{ scale: 1.02 }} transition={{ duration: 1.2, ease: [.16, 1, .3, 1] }} />
+                  <motion.img src={active.image} alt={active.alt} width={active.width} height={active.height} loading="lazy" decoding="async" initial={{ scale: 1.15 }} animate={{ scale: 1.02 }} transition={{ duration: 1.2, ease: [.16, 1, .3, 1] }} />
                   <div className="showcase-shade" />
                   <figcaption><span>Safaya</span><small>Pièce signature · {active.number}</small></figcaption>
                 </motion.figure>
@@ -372,7 +368,7 @@ function App() {
 
         <section className="award-section">
           <motion.figure className="award-photo" initial={{ clipPath: "inset(0 0 100% 0)" }} whileInView={{ clipPath: "inset(0 0 0% 0)" }} viewport={{ once: true, margin: "-15%" }} transition={{ duration: 1.05, ease: [.76, 0, .24, 1] }}>
-            <motion.img src="/images/croissants-oven.webp" alt="Croissants cuisant dans un four" width={1800} height={2700} loading="lazy" initial={{ scale: 1.14 }} whileInView={{ scale: 1.02 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [.16, 1, .3, 1] }} />
+            <motion.img src="/images/croissants-oven.webp" alt="Croissants cuisant dans un four" width={1800} height={2700} loading="lazy" decoding="async" initial={{ scale: 1.14 }} whileInView={{ scale: 1.02 }} viewport={{ once: true }} transition={{ duration: 1.5, ease: [.16, 1, .3, 1] }} />
             <figcaption><span>240°</span><small>La chaleur juste.<br />Le temps précis.</small></figcaption>
           </motion.figure>
           <motion.div className="award-watermark" whileInView={{ x: ["-8%", "0%"] }} viewport={{ once: true }} transition={{ duration: 1.2 }}>PREMIER</motion.div>
@@ -439,7 +435,7 @@ function App() {
 
       <footer id="footer" className="footer-v2">
         <motion.figure className="footer-visual">
-          <motion.img src="/images/croissants-dark.webp" alt="Croissants dorés sur fond sombre" width={1800} height={1200} loading="lazy" whileInView={{ scale: [1.12, 1] }} viewport={{ once: true }} transition={{ duration: 1.6, ease: [.16, 1, .3, 1] }} />
+          <motion.img src="/images/croissants-dark.webp" alt="Croissants dorés sur fond sombre" width={1800} height={1200} loading="lazy" decoding="async" whileInView={{ scale: [1.12, 1] }} viewport={{ once: true }} transition={{ duration: 1.6, ease: [.16, 1, .3, 1] }} />
           <figcaption><span>À demain matin.</span><small>Première fournée · 06:30</small></figcaption>
         </motion.figure>
         <div className="footer-main"><span className="footer-logo">SAFAYA<em>•</em></span><p>Le bon pain.<br />Au bon endroit.<br />Chaque matin.</p></div>
